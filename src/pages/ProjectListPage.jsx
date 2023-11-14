@@ -5,19 +5,19 @@ import { Link } from 'react-router-dom';
 const API_URL = 'https://project-management-api-4641927fee65.herokuapp.com';
 
 function ProjectListPage() {
-	const [project, setProjects] = useState([]);
+	const [projects, setProjects] = useState([]);
 
-	const getAllProjects = () =>
+	const getAllProjects = () => {
 		axios
-			.get(`${API_URL}/projects?_embed=tasks`)
+			.get(API_URL + '/projects?_embed=tasks')
 			.then((response) => {
-				console.log('success');
 				setProjects(response.data);
 			})
 			.catch((error) => {
-				console.log('failed to connect');
+				console.log('Error getting projects from the API...');
 				console.log(error);
 			});
+	};
 
 	useEffect(() => {
 		getAllProjects();
@@ -25,15 +25,21 @@ function ProjectListPage() {
 
 	return (
 		<div className="ProjectListPage">
-			<h1>Projects</h1>
+			<h2>List of projects:</h2>
 
-			{project.map((projectObj, i) => {
+			<Link to="/projects/create">
+				<p>
+					<button>Create Project</button>
+				</p>
+			</Link>
+
+			{projects.map((project) => {
 				return (
-					<section className="card" key={projectObj.id}>
-						<Link to="/projects">
-							<h1>{projectObj.title}</h1>
+					<div className="ProjectCard card" key={project.id}>
+						<Link to={`/projects/${project.id}`}>
+							<h3>{project.title}</h3>
 						</Link>
-					</section>
+					</div>
 				);
 			})}
 		</div>
